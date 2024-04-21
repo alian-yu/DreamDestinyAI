@@ -149,7 +149,7 @@
                     chatMessages.scrollTop = chatMessages.scrollHeight;
 
                     // Construct the URL with the message content as a query parameter
-                    var url = "http://localhost/?action=chat&message=" + encodeURIComponent(message);
+                    var url = "?action=chat&message=" + encodeURIComponent(message);
 
                     // Fetch the response using the fetch API
                     fetch(url)
