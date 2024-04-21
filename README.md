@@ -1,2 +1,1 @@
-# DreamDestinyAI
-DreamDestinyAI: AI-guided dream vacation planner
+This project makes eating healthier easy. Whether you're a vegetarian or not, just tell us what foods you have and how much, such as fruits, veggies, and dairy. We'll create diverse and nutritious meal plans for a specific time period, such as one or two weeks, using the most advanced AI technologies. This way, you won't get bored eating the same thing every day, and you'll know how many calories you're consuming at each meal. We can also share detailed recipes if you'd like. Our goal is to help you live a healthier life.
