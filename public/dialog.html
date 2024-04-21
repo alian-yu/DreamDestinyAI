@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 42px); /* Height of the viewport */
+        }
+        .chat-messages {
+            padding: 10px;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px); /* Adjusted max-height */
+            flex-grow: 1; /* Fill remaining vertical space */
+        }
+        .chat-message {
+            margin-bottom: 10px;
+        }
+        .profile-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .message-sender-row {
+            display: flex;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            margin-right: 5px;
+            margin-top: 13px;
+        }
+        .message-text {
+            padding: 8px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: 0; /* No left margin */
+            white-space: pre-wrap; /* Allow line breaks in the message text */
+        }
+        .sent-message {
+            align-self: flex-end;
+        }
+        .response-message {
+            align-self: flex-start;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f4f4f4;
+            height: 60px; /* Adjusted height */
+        }
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .chat-input input[type="submit"] {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        /* Profile image colors */
+        .you-profile {
+            background-color: #007bff; /* Blue */
+            min-width: 40px;
+        }
+        .assistant-profile {
+            background-color: #28a745; /* Green */
+            min-width: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <!-- Chat messages will be appended here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message" name="message" placeholder="Message HealthyEats Assistant...">
+            <input type="submit" value="Send" id="sendMessage">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var chatMessages = document.getElementById("chatMessages");
+            var sendMessageBtn = document.getElementById("sendMessage");
+            var messageInput = document.getElementById("message");
+
+            sendMessageBtn.addEventListener("click", sendMessage);
+            messageInput.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                var message = messageInput.value.trim();  // Trim whitespace from the message
+
+                if (message !== "") {
+                    // Append the sent message to the chat messages container
+                    var sentMessage = document.createElement("div");
+                    sentMessage.classList.add("chat-message", "sent-message");
+
+                    var messageSenderRow = document.createElement("div");
+                    messageSenderRow.classList.add("message-sender-row");
+                    messageSenderRow.textContent = "";
+
+                    var profileImage = document.createElement("div");
+                    profileImage.classList.add("profile-image", "you-profile");
+                    profileImage.textContent = "";
+                    var messageSender = document.createElement("span");
+                    messageSender.classList.add("message-sender");
+                    messageSender.textContent = "You";
+                    messageSenderRow.appendChild(profileImage);
+                    messageSenderRow.appendChild(messageSender);
+                    var messageText = document.createElement("div");
+                    messageText.classList.add("message-text");
+                    messageText.textContent = message;
+
+                    sentMessage.appendChild(messageSenderRow);
+                    sentMessage.appendChild(messageText);
+
+                    chatMessages.appendChild(sentMessage);
+
+                    // Scroll the chat messages container to the bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    // Construct the URL with the message content as a query parameter
+                    var url = "http://localhost/?action=chat&message=" + encodeURIComponent(message);
+
+                    // Fetch the response using the fetch API
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(data => {
+                            // Append the response message to the chat messages container
+                            var responseMessage = document.createElement("div");
+                            responseMessage.classList.add("chat-message", "response-message");
+
+                            var messageSenderRow = document.createElement("div");
+                            messageSenderRow.classList.add("message-sender-row");
+                            messageSenderRow.textContent = "";
+
+                            var profileImage = document.createElement("div");
+                            profileImage.classList.add("profile-image", "assistant-profile");
+                            profileImage.textContent = "";
+                            var messageSender = document.createElement("span");
+                            messageSender.classList.add("message-sender");
+                            messageSender.textContent = "HealthyEats Assistant";
+                            messageSenderRow.appendChild(profileImage);
+                            messageSenderRow.appendChild(messageSender);
+                            var messageText = document.createElement("div");
+                            messageText.classList.add("message-text");
+                            messageText.innerHTML = data;
+
+                            responseMessage.appendChild(messageSenderRow);
+                            responseMessage.appendChild(messageText);
+
+                            chatMessages.appendChild(responseMessage);
+
+                            // Scroll the chat messages container to the bottom again after receiving the response
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+
+                    // Clear the message input field after sending the message
+                    messageInput.value = "";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
